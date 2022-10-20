@@ -2,11 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUpdateUserFormRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
+    protected $model;
+
+    public function __construct(User $user)
+    {
+        $this->model = $user;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -26,7 +35,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('users.create');
     }
 
     /**
@@ -35,9 +44,14 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUpdateUserFormRequest $request)
     {
-        //
+        $data = $request->all();
+        $data['password'] = bcrypt($request->password);
+
+        $this->model->create($data);
+
+        return redirect()->route('users.index');
     }
 
     /**
@@ -48,7 +62,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = DB::table('users')->find($id);
+
+        return view('users.show', compact('user'));
     }
 
     /**
