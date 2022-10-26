@@ -6,6 +6,7 @@ use App\Http\Requests\StoreUpdateUserFormRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -75,7 +76,11 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        if(!$user = $this->model->find($id)) {
+            return redirect()->route('users.index');
+        }
+
+        return view('users.edit', compact('user'));
     }
 
     /**
@@ -85,9 +90,21 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreUpdateUserFormRequest $request, $id)
     {
-        //
+        if(!$user = $this->model->find($id)) {
+            return redirect()->route('users.index');
+        }
+
+        $data = $request->only('name', 'email');
+        
+        if ($request->password){
+            $data['password'] = bcrypt($request->password);
+        }
+
+        $user->update($data);
+
+        return redirect()->route('users.index');
     }
 
     /**
