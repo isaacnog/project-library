@@ -4,8 +4,7 @@
 
 @section('content')
     
-    <h1>Editar Usuário {{ $user->name }}</h1>
-    <a href="{{ route('users.index') }}">Retornar</a>
+    <h1>Editar Usuário {{ $user->name }}</h1><a href="{{ route('users.index') }}">Retornar</a>
 
     @include('includes.validations-form')
 
